@@ -1,6 +1,6 @@
 import socket
 HOST = "localhost"  
-PORT = 8082  
+PORT = 8081  
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((HOST, PORT))
     s.listen()
@@ -62,7 +62,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                                     +activityName.encode("utf-8"))
                     else:
                         print("Activity does not exist")
-                        conn.sendall(b"HTTP/1.1 403 Forbidden \n")
+                        conn.sendall(b"HTTP/1.1 404 Not Found \n")
             else:
                 print("Invalid URL")
                 conn.sendall(b"HTTP/1.1 404 Not Found \n")
