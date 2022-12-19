@@ -1,6 +1,6 @@
 import socket
 HOST = "localhost"  
-PORT = 8081  
+PORT = 8082  
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((HOST, PORT))
     s.listen()
@@ -66,9 +66,3 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             else:
                 print("Invalid URL")
                 conn.sendall(b"HTTP/1.1 404 Not Found \n")
-
-            
-
-                
-
-    

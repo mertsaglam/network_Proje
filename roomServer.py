@@ -1,7 +1,4 @@
-
 import socket
-
-
 HOST = "localhost"  # Standard loopback interface address (localhost)
 PORT = 8081  # Port to listen on (non-privileged ports are > 1023)
 
