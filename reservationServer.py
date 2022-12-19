@@ -37,13 +37,4 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     if response == 200:
                         print("Activity exists")
                     else:
-                        print("Activity does not exist")
-                        
-                    
-                    
-
-
-
-
-            
-            
+                        print("Activity does not exist")    

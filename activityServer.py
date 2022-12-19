@@ -1,6 +1,6 @@
 import socket
 HOST = "localhost"  
-PORT = 8082  
+PORT = 8082
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((HOST, PORT))
     s.listen()

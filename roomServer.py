@@ -1,6 +1,9 @@
 import socket
+from scheduleUtils import ScheduleUtils
 HOST = "localhost"  # Standard loopback interface address (localhost)
 PORT = 8081  # Port to listen on (non-privileged ports are > 1023)
+
+
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((HOST, PORT))
@@ -27,6 +30,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     f = open("rooms.txt", "a")
                     f.write(roomName+"\n")
                     f.close()
+
+                    # CREATE A NEW ROOM WITH EMPTY SCHEDULE.
+                    ScheduleUtils.createNewRoom(roomName)                    
+
                     print(roomName + "added to the rooms.txt file")
                     conn.sendall(b"HTTP/1.1 200 OK\n"
                     +b"Content-Type: text/html\n"
@@ -49,13 +56,17 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                         else:
                             continue
                     f.close()
+
+                    # REMOVE THE ROOM ALONG WITH ITS ACTIVITIES...
+                    ScheduleUtils.removeRoom(roomName)
+
                     print(roomName + "removed from the rooms.txt file")
                     conn.sendall(b"HTTP/1.1 200 OK\n"
                     +b"Content-Type: text/html\n"
                     +b"\n" # Important!
                     +b""+roomName.encode("utf-8")+b" removed from the rooms.txt file\n")
                 else:
-                    print("Room does not exist")
+                    print("No room with that name.")
                     conn.sendall(b"HTTP/1.1 403 Forbidden \n")
             elif funcType == "/reserve":
                 #/reserve?name=roomname&day=x&hour=y&duration=z:
@@ -63,18 +74,36 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 day = url.split("?")[1].split("&")[1].split("=")[1]
                 hour = url.split("?")[1].split("&")[2].split("=")[1]
                 duration = url.split("?")[1].split("&")[3].split("=")[1]
-                print(roomName + " is the room name to be reserved")
-                print(day + " is the day to be reserved")
-                print(hour + " is the hour to be reserved")
-                print(duration + " is the duration to be reserved")
+                #print(roomName + " is the room name to be reserved")
+                #print(day + " is the day to be reserved")
+                #print(hour + " is the hour to be reserved")
+                #print(duration + " is the duration to be reserved")
+
+                #ScheduleUtils.fillSchedule(roomName,activity)
+
                 conn.sendall(b"HTTP/1.1 200 OK\n"
                 +b"Content-Type: text/html\n"
                 +b"\n" # Important!
                 +b""+roomName.encode("utf-8")+b" is the room name to be reserved\n")
                
             elif funcType == "/checkavailability":
-                roomName = url.split("?")[1].split("=")[1]
-                print(roomName + " is the room name to be checked")
+                #/checkavailability?name=roomname&day=x
+                roomName = url.split("?")[1].split("&")[0].split("=")[1]
+                day = url.split("?")[1].split("&")[1].split("=")[1]
+                #print(roomName + " is the room name to be checked")
+                
+                if ScheduleUtils.isValidDay(day)==False:
+                    print("Day input is not valid. \n")
+                    conn.sendall(b"HTTP/1.1 400 Bad Request \n")
+
+                f = open("rooms.txt", "r")
+                if roomName in f.read():
+                    availableHours = ScheduleUtils.getAvailableHours(roomName,day)
+                    # TO DO: PUT AVALIABLE HOURS INSIDE OF THE RESPONSE BODY AND RETURN BACK.
+                else:
+                    print("No room with that name.")
+                    conn.sendall(b"HTTP/1.1 404 Not Found \n")
+                
             else:
                 print("Wrong URL")
                 conn.sendall(b"HTTP/1.1 404 Not Found \n")
