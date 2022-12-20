@@ -1,6 +1,6 @@
 import socket
 HOST = "localhost"  
-PORT = 8082  
+PORT = 8082
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((HOST, PORT))
     s.listen()
@@ -17,7 +17,14 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             print(url)
             #/add?name=activityname 
             if url.startswith("add?"):
-                activityName = url.split("?")[1].split("=")[1]
+                query_string = url.split('?')[1]
+                qparams  = dict(param.split('=') for param in query_string.split('&'))
+                
+                if qparams.get("activity")==None:
+                    print("The queries are missing or invalid.\n")
+                    conn.sendall(b"HTTP/1.1 400 Bad Request \n")
+
+                activityName = qparams["activity"]
                 #open the activity file and add the activity if it is not already there
                 with open("activities.txt", "r") as f:
                     if activityName +"\n" not in f.read():
@@ -33,7 +40,13 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                         print("Activity already exists")
                         conn.sendall(b"HTTP/1.1 403 Forbidden \n")
             elif url.startswith("remove?"):
-                activityName = url.split("?")[1].split("=")[1]
+                query_string = url.split('?')[1]
+                qparams  = dict(param.split('=') for param in query_string.split('&'))
+                if qparams.get("activity")==None:
+                    print("The queries are missing or invalid.\n")
+                    conn.sendall(b"HTTP/1.1 400 Bad Request \n")
+                activityName = qparams["activity"]
+
                 with open("activities.txt", "r") as f:
                     if activityName + "\n" in f.read():
                         with open("activities.txt", "r") as f:
@@ -51,7 +64,13 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                         print("Activity does not exist")
                         conn.sendall(b"HTTP/1.1 403 Forbidden \n")
             elif url.startswith("check?"):
-                activityName = url.split("?")[1].split("=")[1]
+                query_string = url.split('?')[1]
+                qparams  = dict(param.split('=') for param in query_string.split('&'))
+                if qparams.get("activity")==None:
+                    print("The queries are missing or invalid.\n")
+                    conn.sendall(b"HTTP/1.1 400 Bad Request \n")
+                activityName = qparams["activity"]
+
                 with open("activities.txt", "r") as f:
                     if activityName in f.read():
                         print("Activity exists")
@@ -64,5 +83,5 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                         print("Activity does not exist")
                         conn.sendall(b"HTTP/1.1 404 Not Found \n")
             else:
-                print("Invalid URL")
+                print("Requested URL not found in Activity Server.")
                 conn.sendall(b"HTTP/1.1 404 Not Found \n")
