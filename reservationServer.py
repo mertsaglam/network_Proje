@@ -25,20 +25,18 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     print("The queries are missing or invalid.\n")
                     conn.sendall(b"HTTP/1.1 400 Bad Request \n")
                 
-                
-
-                """
-                roomName = urlstring.split("=")[1].split("&")[0]
-                activityName = urlstring.split("=")[2].split("&")[0]
-                day = urlstring.split("=")[3].split("&")[0]
-                hour = urlstring.split("=")[4].split("&")[0]
-                duration = urlstring.split("=")[5].split("&")[0]
+                roomName = qparams["room"]
+                activityName = qparams["activity"]
+                day = qparams["day"]
+                hour = qparams["hour"]
+                duration = qparams["activity"]
                 print("Room: " + roomName)
                 print("Activity: " + activityName)
                 print("Day: " + day)
                 print("Hour: " + hour)
                 print("Duration: " + duration)
-                """
+
+                
                 """
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as a:
                     a.connect((HOST, 8081))
@@ -56,3 +54,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 pass
             elif funcType=="display":
                 pass
+            else:
+                print("Requested URL not found in Reservation Server.\n")
+                conn.sendall(b"HTTP/1.1 400 Bad Request \n")

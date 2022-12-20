@@ -20,7 +20,14 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             print(funcType)
             #check for the function type if it is add
             if funcType == "/add":
-                roomName = url.split("?")[1].split("=")[1]
+                query_string = url.split('?')[1]
+                qparams  = dict(param.split('=') for param in query_string.split('&'))
+
+                if qparams.get("room")==None:
+                    print("The query parameters are missing or invalid.\n")
+                    conn.sendall(b"HTTP/1.1 400 Bad Request \n")
+
+                roomName = qparams["room"]
                 #open the rooms.txt file to check if the room is already added
                 f = open("rooms.txt", "r")
                 if roomName in f.read():
@@ -41,7 +48,14 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     +b""+roomName.encode("utf-8")+b" added to the rooms.txt file\n")
             #check for the function type if it is remove
             elif funcType == "/remove":
-                roomName = url.split("?")[1].split("=")[1]
+                query_string = url.split('?')[1]
+                qparams  = dict(param.split('=') for param in query_string.split('&'))
+
+                if qparams.get("room")==None:
+                    print("The query parameters are missing or invalid.\n")
+                    conn.sendall(b"HTTP/1.1 400 Bad Request \n")
+                    
+                roomName = qparams["room"]
                 #open the rooms.txt file to check if the room is already added
                 #if it is added remove it
                 f = open("rooms.txt", "r")
@@ -68,12 +82,23 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 else:
                     print("No room with that name.")
                     conn.sendall(b"HTTP/1.1 403 Forbidden \n")
+
+
             elif funcType == "/reserve":
                 #/reserve?name=roomname&day=x&hour=y&duration=z:
-                roomName = url.split("?")[1].split("&")[0].split("=")[1]
-                day = url.split("?")[1].split("&")[1].split("=")[1]
-                hour = url.split("?")[1].split("&")[2].split("=")[1]
-                duration = url.split("?")[1].split("&")[3].split("=")[1]
+                query_string = url.split('?')[1]
+                qparams  = dict(param.split('=') for param in query_string.split('&'))
+
+                if qparams.get("room")==None or qparams.get("activity")==None or qparams.get("day")==None or qparams.get("hour") or qparams.get("duration")==None:
+                    print("The queries are missing or invalid.\n")
+                    conn.sendall(b"HTTP/1.1 400 Bad Request \n")
+
+                roomName = qparams["room"]
+                activityName = qparams["activity"]
+                day = qparams["day"]
+                hour = qparams["hour"]
+                duration = qparams["activity"]
+
                 #print(roomName + " is the room name to be reserved")
                 #print(day + " is the day to be reserved")
                 #print(hour + " is the hour to be reserved")
@@ -105,7 +130,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     conn.sendall(b"HTTP/1.1 404 Not Found \n")
                 
             else:
-                print("Wrong URL")
+                print("Requested URL is not found in Room Server.")
                 conn.sendall(b"HTTP/1.1 404 Not Found \n")
                 
     #         conn.sendall(b"HTTP/1.1 200 OK\n"
