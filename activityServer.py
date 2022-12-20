@@ -20,11 +20,11 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 query_string = url.split('?')[1]
                 qparams  = dict(param.split('=') for param in query_string.split('&'))
                 
-                if qparams.get("activity")==None:
+                if qparams.get("name")==None:
                     print("The queries are missing or invalid.\n")
                     conn.sendall(b"HTTP/1.1 400 Bad Request \n")
 
-                activityName = qparams["activity"]
+                activityName = qparams["name"]
                 #open the activity file and add the activity if it is not already there
                 with open("activities.txt", "r") as f:
                     if activityName +"\n" not in f.read():
@@ -42,10 +42,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             elif url.startswith("remove?"):
                 query_string = url.split('?')[1]
                 qparams  = dict(param.split('=') for param in query_string.split('&'))
-                if qparams.get("activity")==None:
+                if qparams.get("name")==None:
                     print("The queries are missing or invalid.\n")
                     conn.sendall(b"HTTP/1.1 400 Bad Request \n")
-                activityName = qparams["activity"]
+                activityName = qparams["name"]
 
                 with open("activities.txt", "r") as f:
                     if activityName + "\n" in f.read():
@@ -66,10 +66,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             elif url.startswith("check?"):
                 query_string = url.split('?')[1]
                 qparams  = dict(param.split('=') for param in query_string.split('&'))
-                if qparams.get("activity")==None:
+                if qparams.get("name")==None:
                     print("The queries are missing or invalid.\n")
                     conn.sendall(b"HTTP/1.1 400 Bad Request \n")
-                activityName = qparams["activity"]
+                activityName = qparams["name"]
 
                 with open("activities.txt", "r") as f:
                     if activityName in f.read():

@@ -23,11 +23,11 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 query_string = url.split('?')[1]
                 qparams  = dict(param.split('=') for param in query_string.split('&'))
 
-                if qparams.get("room")==None:
+                if qparams.get("name")==None:
                     print("The query parameters are missing or invalid.\n")
                     conn.sendall(b"HTTP/1.1 400 Bad Request \n")
 
-                roomName = qparams["room"]
+                roomName = qparams["name"]
                 #open the rooms.txt file to check if the room is already added
                 f = open("rooms.txt", "r")
                 if roomName in f.read():
@@ -51,11 +51,11 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 query_string = url.split('?')[1]
                 qparams  = dict(param.split('=') for param in query_string.split('&'))
 
-                if qparams.get("room")==None:
+                if qparams.get("name")==None:
                     print("The query parameters are missing or invalid.\n")
                     conn.sendall(b"HTTP/1.1 400 Bad Request \n")
                     
-                roomName = qparams["room"]
+                roomName = qparams["name"]
                 #open the rooms.txt file to check if the room is already added
                 #if it is added remove it
                 f = open("rooms.txt", "r")
@@ -89,12 +89,11 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 query_string = url.split('?')[1]
                 qparams  = dict(param.split('=') for param in query_string.split('&'))
 
-                if qparams.get("room")==None or qparams.get("activity")==None or qparams.get("day")==None or qparams.get("hour") or qparams.get("duration")==None:
+                if qparams.get("name")==None or qparams.get("day")==None or qparams.get("hour") or qparams.get("duration")==None:
                     print("The queries are missing or invalid.\n")
                     conn.sendall(b"HTTP/1.1 400 Bad Request \n")
 
-                roomName = qparams["room"]
-                activityName = qparams["activity"]
+                roomName = qparams["name"]
                 day = qparams["day"]
                 hour = qparams["hour"]
                 duration = qparams["activity"]
@@ -113,9 +112,14 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                
             elif funcType == "/checkavailability":
                 #/checkavailability?name=roomname&day=x
-                roomName = url.split("?")[1].split("&")[0].split("=")[1]
-                day = url.split("?")[1].split("&")[1].split("=")[1]
-                #print(roomName + " is the room name to be checked")
+                query_string = url.split('?')[1]
+                qparams  = dict(param.split('=') for param in query_string.split('&'))
+                if qparams.get("name")==None or qparams.get("day")==None:
+                    print("The queries are missing or invalid.\n")
+                    conn.sendall(b"HTTP/1.1 400 Bad Request \n")
+                    
+                roomName = qparams["name"]
+                day = qparams["day"]
                 
                 if ScheduleUtils.isValidDay(day)==False:
                     print("Day input is not valid. \n")
