@@ -87,11 +87,17 @@ class ScheduleUtils:
             json.dump(roomsdict, json_file)
 
     @staticmethod
-    def isValidDay(day):
+    def isValidDay(daystring):
+        if daystring.isnumeric()==False:
+            return False
+        day = int(daystring)
         return day>=1 and day<=7
 
     @staticmethod
-    def isValidHour(hour):
+    def isValidHour(hourstring):
+        if hourstring.isnumeric()==False:
+            return False
+        hour = int(hourstring)
         return hour>=9 and hour<=17
 
     @staticmethod

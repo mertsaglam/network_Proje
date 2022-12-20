@@ -1,4 +1,6 @@
 import socket
+from scheduleUtils import ScheduleUtils
+
 HOST = "localhost"
 PORT = 8080
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -19,41 +21,63 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 #/reserve?room=roomname&activity=activityname&day=x&hour=y&duration=z
                 query_string = urlstring.split('?')[1]
                 qparams  = dict(param.split('=') for param in query_string.split('&'))
-                print(qparams)
+                # print(qparams)
 
-                if qparams.get("room")==None or qparams.get("activity")==None or qparams.get("day")==None or qparams.get("hour") or qparams.get("duration")==None:
-                    print("The queries are missing or invalid.\n")
-                    conn.sendall(b"HTTP/1.1 400 Bad Request \n")
+                if qparams.get("room")==None or qparams.get("activity")==None or qparams.get("day")==None or qparams.get("hour")==None or qparams.get("duration")==None:
+                    print("The queries are missing or invalid.\n") 
+                    conn.sendall(b"HTTP/1.1 400 Bad Request\n"+b"Content-Type: text/html\n"+b"\n")
+                    continue
                 
                 roomName = qparams["room"]
                 activityName = qparams["activity"]
                 day = qparams["day"]
                 hour = qparams["hour"]
                 duration = qparams["activity"]
-                print("Room: " + roomName)
-                print("Activity: " + activityName)
-                print("Day: " + day)
-                print("Hour: " + hour)
-                print("Duration: " + duration)
-
+                print("Reservation Server - Room: " + roomName)
+                print("Reservation Server - Activity: " + activityName)
+                print("Reservation Server - Day: " + day)
+                print("Reservation Server - Hour: " + hour)
+                print("Reservation Server - Duration: " + duration)
                 
-                """
+                if ScheduleUtils.isValidDay(day)==False or ScheduleUtils.isValidHour(hour)==False:
+                    print("The queries are missing or invalid.\n") 
+                    conn.sendall(b"HTTP/1.1 400 Bad Request \n")
+                    continue
+
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as a:
-                    a.connect((HOST, 8081))
-                    a.sendall(b"GET /check?name="
-                    + activityName.encode("utf-8")
-                    + b" HTTP/1.1\r\nHost: localhost:8086\r\nAccept: text/html\r\n\r\n")
+                    a.connect((HOST,8081))
+                    headers = "GET " + f"/reserve?room={roomName}&activity={activityName}&day={day}&hour={hour}&duration={duration}" + " HTTP/1.1\r\n" + "Host: localhost:8081\r\n" + "Accept: text/html\r\n\rn"
+                    a.sendall(headers.encode('utf-8'))
                     response = a.recv(1024).decode("utf-8")
                     response = response.split(" ")[1]
                     if response == 200:
-                        print("Activity exists")
+                        print("Reservation is completed.")
                     else:
-                        print("Activity does not exist") 
-                """
+                        print("Reservation is failed.")
+                
+                conn.sendall(b"HTTP/1.1 200 OK\n"+b"Content-Type: text/html\n"+b"\n")
             elif funcType=="listavailability":
-                pass
+                query_string = urlstring.split('?')[1]
+                qparams  = dict(param.split('=') for param in query_string.split('&'))
+                print(qparams)
+
+                if qparams.get("room")==None:
+                    print("The queries are missing or invalid.\n")
+                    conn.sendall(b"HTTP/1.1 400 Bad Request\n"+b"Content-Type: text/html\n"+b"\n")
+                
+                roomName = qparams["room"]
+                #...
             elif funcType=="display":
-                pass
+                query_string = urlstring.split('?')[1]
+                qparams  = dict(param.split('=') for param in query_string.split('&'))
+                print(qparams)
+
+                if qparams.get("id")==None:
+                    print("The queries are missing or invalid.\n")
+                    conn.sendall(b"HTTP/1.1 400 Bad Request\n"+b"Content-Type: text/html\n"+b"\n")
+                
+                resid = qparams["id"]
+                #...
             else:
                 print("Requested URL not found in Reservation Server.\n")
-                conn.sendall(b"HTTP/1.1 400 Bad Request \n")
+                conn.sendall(b"HTTP/1.1 400 Bad Request\n"+b"Content-Type: text/html\n"+b"\n")
