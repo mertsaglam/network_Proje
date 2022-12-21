@@ -68,7 +68,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
 
 
-            elif funcType=="listavailability":
+            elif funcType=="listavailability": # WORKING FINE.
                 query_string = urlstring.split('?')[1]
                 qparams  = dict(param.split('=') for param in query_string.split('&'))
                 
@@ -123,7 +123,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
 
 
-            elif funcType=="display":
+            elif funcType=="display": # WORKING FINE.
                 query_string = urlstring.split('?')[1]
                 qparams  = dict(param.split('=') for param in query_string.split('&'))
 
@@ -152,7 +152,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
 
 
-            else:
+            else: # WORKING FINE.
                 print("[INFO]: " + "The requested URL is not found in Reservation Server.\n")
                 response = 'HTTP/1.1 404 Not Found\r\n' + \
                             'Content-Type: text/html\r\n\r\n' + \

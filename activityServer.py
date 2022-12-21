@@ -1,6 +1,9 @@
 import socket
+import time
+
 HOST = "localhost"  
 PORT = 8082
+
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((HOST, PORT))
     s.listen()
@@ -17,6 +20,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
 
             if url.startswith("add?"): # WORKING FINE.
+                time.sleep(4)
                 query_string = url.split('?')[1]
                 qparams = dict(param.split('=') for param in query_string.split('&'))
                 
