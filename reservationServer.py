@@ -71,7 +71,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             elif funcType=="listavailability":
                 query_string = urlstring.split('?')[1]
                 qparams  = dict(param.split('=') for param in query_string.split('&'))
-                print(qparams)
+                
                 if qparams.get("room")==None:
                     print("[INFO]: " + "The queries are missing or invalid.\n")
                     response = 'HTTP/1.1 400 Bad Request\r\n' + \
@@ -89,12 +89,34 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                         headers = "GET " + f"/checkavailability?name={roomName}&day={day}" + " HTTP/1.1\r\n" + "Host: localhost:8081\r\n" + "Accept: text/html\r\n\rn"
                         a.sendall(headers.encode('utf-8'))
                         response = a.recv(1024).decode("utf-8")
-                        status = response.split(" ")[1]
                         conn.sendall(response.encode())
                 else:
+                    availableTimes = "\r\n"
                     for day in range(1,8):
-                        pass
-                #...
+                        availableTimes = availableTimes + "<h1>"
+                        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as a:
+                            a.connect((HOST,8081))
+                            headers = "GET " + f"/checkavailability?name={roomName}&day={day}" + " HTTP/1.1\r\n" + "Host: localhost:8081\r\n" + "Accept: text/html\r\n\rn"
+                            a.sendall(headers.encode('utf-8'))
+                            response = a.recv(1024).decode("utf-8")
+                            status = response.split(" ")[1]
+                            if status!="200":
+                                conn.sendall(response.encode())
+                            else:
+                                responsehours = response.split("[")[1].split("]")[0].split(" ")
+                                availableHours = []
+                                for hour in responsehours:
+                                    if len(hour)>0:
+                                        availableHours.append(hour)
+                                availableTimes = availableTimes + ScheduleUtils.getDayName(day) + ":" + str(availableHours)
+
+                        availableTimes = availableTimes + "<h1>\r\n"
+
+                    response = 'HTTP/1.1 200 OK\r\n' + \
+                                'Content-Type: text/html\r\n\r\n' + \
+                                '<h1>The room, ' + roomName + ', is available in times:</h1>\r\n' + \
+                                availableTimes
+                    conn.sendall(response.encode())
 
 
 
@@ -114,7 +136,18 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     continue
                 
                 resid = qparams["id"]
-                #...
+
+                if ScheduleUtils.isValidReservationId(resid):
+                    response = 'HTTP/1.1 200 OK\r\n' + \
+                                'Content-Type: text/html\r\n\r\n' + \
+                                ScheduleUtils.getReservationDetails(resid)
+                    conn.sendall(response.encode())
+                else:
+                    print("[INFO]: " + "The reservation with id " + resid + " is not found.\n")
+                    response = 'HTTP/1.1 404 Not Found\r\n' + \
+                                'Content-Type: text/html\r\n\r\n' + \
+                                '<h1>The reservation with id ' + resid + ' is not found.</h1>\r\n'
+                    conn.sendall(response.encode())
 
 
 

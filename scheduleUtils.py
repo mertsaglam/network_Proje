@@ -116,7 +116,45 @@ class ScheduleUtils:
                 return True
             else:
                 return False
-        return False
+        
+    @staticmethod
+    def isValidReservationId(idstring):
+        if idstring.isnumeric()==False:
+            return False
+        id = int(idstring)
+        if id <= 0:
+            return False
+        with open('reservations.txt', 'r') as file:
+            lines = []
+            for line in file:
+                line = line.strip()
+                lines.append(line)
+            
+            if len(lines)<id:
+                return False
+            else:
+                return True
+    
+    @staticmethod
+    def getReservationDetails(idstring):
+        id = int(idstring)
+        with open('reservations.txt', 'r') as file:
+            lines = []
+            for line in file:
+                line = line.strip()
+                lines.append(line)
+            
+            reservation = lines[id-1]
+            #19 M1Z103 Webinar 1 9 1
+            roomName = reservation.split(' ')[1]
+            activityName = reservation.split(' ')[2]
+            day = reservation.split(' ')[3]
+            hour = reservation.split(' ')[4]
+            duration = reservation.split(' ')[5]
+            return "<h1>The reservation, " + idstring + \
+                    ", is on " + \
+                    ScheduleUtils.getDayName(int(day)) + \
+                    " at " + hour + " oclock, and will last " + duration + " hours.</h1>\r\n"
     
     @staticmethod
     def isValidDuration(durationstring):
@@ -138,4 +176,9 @@ class ScheduleUtils:
             result = result + str(hour) + " "
         result = result + "]"
         return result
+
+    @staticmethod
+    def getDayName(day):
+        days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+        return days[day-1]
 
