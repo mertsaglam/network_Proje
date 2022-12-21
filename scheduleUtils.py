@@ -127,10 +127,11 @@ class ScheduleUtils:
 
     @staticmethod
     def getAvailableHours(roomName,day):
+        day = day - 1
         schedule = ScheduleUtils.getSchedule(roomName)
         availableHours = []
         for hour in range(9,18):
-            if schedule[day][hour]=="empty":
+            if schedule[day][hour-1]=="empty":
                 availableHours.append(hour)
         result = "[ "
         for hour in availableHours:

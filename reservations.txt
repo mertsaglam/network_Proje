@@ -19,3 +19,7 @@
 19 M1Z103 Webseminar1 1 9 1
 20 M1Z103 webinar 1 10 1
 21 M1Z103 webinar 1 9 1
+22 M1Z103 webinar 1 11 1
+23 M1Z103 webinar 1 12 3
+24 M1Z103 webinar 1 15 2
+25 M1Z103 webinar 2 15 2

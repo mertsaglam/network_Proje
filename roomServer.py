@@ -125,7 +125,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 #print(qparams)
 
                 if qparams.get("room")==None or qparams.get("activity")==None or qparams.get("day")==None or qparams.get("hour")==None or qparams.get("duration")==None:
-                    print("[INFO]: " +"The queries are missing or invalid.\n") 
+                    print("[INFO]: " + "The queries are missing or invalid.\n") 
                     response = 'HTTP/1.1 400 Bad Request\r\n' + \
                                'Content-Type: text/html\r\n\r\n' + \
                                '<h1>The queries are missing or invalid.</h1>\r\n'
