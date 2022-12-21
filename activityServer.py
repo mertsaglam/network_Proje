@@ -16,6 +16,12 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             url = url.split("/")[1]
             # print(url)
             #/add?name=activityname 
+
+
+
+
+
+
             if url.startswith("add?"):
                 query_string = url.split('?')[1]
                 qparams  = dict(param.split('=') for param in query_string.split('&'))
@@ -39,6 +45,13 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     else:
                         print("Activity already exists")
                         conn.sendall(b"HTTP/1.1 403 Forbidden\n"+b"Content-Type: text/html\n"+b"\n")
+
+
+
+
+
+
+
             elif url.startswith("remove?"):
                 query_string = url.split('?')[1]
                 qparams  = dict(param.split('=') for param in query_string.split('&'))
@@ -63,6 +76,11 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     else:
                         print("Activity does not exist")
                         conn.sendall(b"HTTP/1.1 403 Forbidden\n"+b"Content-Type: text/html\n"+b"\n")
+
+
+
+
+
             elif url.startswith("check?"):
                 query_string = url.split('?')[1]
                 qparams  = dict(param.split('=') for param in query_string.split('&'))
@@ -82,6 +100,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     else:
                         print("Activity does not exist")
                         conn.sendall(b"HTTP/1.1 404 Not Found\n"+b"Content-Type: text/html\n"+b"\n")
+
+
+                        
             else:
                 print("Requested URL not found in Activity Server.")
                 conn.sendall(b"HTTP/1.1 404 Not Found\n"+b"Content-Type: text/html\n"+b"\n")

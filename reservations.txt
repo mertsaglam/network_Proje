@@ -16,3 +16,4 @@
 16 roomname7 activityname7 7 10 activityname7
 17 roomname7 activityname7 7 10 activityname7
 18 roomname7 activityname7 7 10 activityname7
+19 M1Z103 Webseminar1 1 9 1

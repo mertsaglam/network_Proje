@@ -101,11 +101,40 @@ class ScheduleUtils:
         return hour>=9 and hour<=17
 
     @staticmethod
+    def isValidRoom(roomName):
+        f = open('roomschedules.json')
+        roomsdict = json.load(f)
+        f.close()
+        if roomsdict.get(roomName)==None:
+            return False
+        return True
+
+    @staticmethod
+    def isValidActivity(activityName):
+        with open("activities.txt", "r") as f:
+            if activityName + "\n" in f.read():
+                return True
+            else:
+                return False
+        return False
+    
+    @staticmethod
+    def isValidDuration(durationstring):
+        if durationstring.isnumeric()==False:
+            return False
+        duration = int(durationstring)
+        return duration>=1 and duration<=9
+
+    @staticmethod
     def getAvailableHours(roomName,day):
         schedule = ScheduleUtils.getSchedule(roomName)
         availableHours = []
         for hour in range(9,18):
             if schedule[day][hour]=="empty":
                 availableHours.append(hour)
-        return availableHours
+        result = "[ "
+        for hour in availableHours:
+            result = result + str(hour) + " "
+        result = result + "]"
+        return result
 

@@ -11,28 +11,40 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     while True:
         conn, addr = s.accept()
         with conn:
-            # print(f"Connected by {addr}")
             data = conn.recv(1024)
-            #get the URL
             url = data.decode("utf-8").split(" ")[1]
-            # print(url)
             funcType = url.split("?")[0]
-            # print(funcType)
-            #check for the function type if it is add
-            if funcType == "/add":
+            
+
+
+
+
+
+
+            
+            if funcType == "/add": # WORKING FINE.
+                # /add?name=M1Z103
                 query_string = url.split('?')[1]
                 qparams  = dict(param.split('=') for param in query_string.split('&'))
 
                 if qparams.get("name")==None:
-                    print("The query parameters are missing or invalid.\n")
-                    conn.sendall(b"HTTP/1.1 400 Bad Request\n"+b"Content-Type: text/html\n"+b"\n")
+                    print("[INFO]: " + "The query parameters are missing or invalid.\n")
+                    response = 'HTTP/1.1 400 Bad Request\r\n' + \
+                               'Content-Type: text/html\r\n\r\n' + \
+                               '<h1>The queries are missing or invalid.</h1>\r\n'
+                    conn.sendall(response.encode())
+                    continue
 
                 roomName = qparams["name"]
-                #open the rooms.txt file to check if the room is already added
+                
                 f = open("rooms.txt", "r")
                 if roomName in f.read():
-                    print("Room already exists")
-                    conn.sendall(b"HTTP/1.1 403 Forbidden\n"+b"Content-Type: text/html\n"+b"\n")
+                    print("[INFO]: " + "Room already exists")
+                    response = 'HTTP/1.1 403 Forbidden\r\n' + \
+                               'Content-Type: text/html\r\n\r\n' + \
+                               '<h1>Room with the name '+ roomName + ' already exists.</h1>\r\n'
+                    conn.sendall(response.encode())
+                    continue
                 else:
                     f = open("rooms.txt", "a")
                     f.write(roomName+"\n")
@@ -41,20 +53,36 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     # CREATE A NEW ROOM WITH EMPTY SCHEDULE.
                     ScheduleUtils.createNewRoom(roomName)                    
 
-                    print(roomName + "added to the rooms.txt file")
-                    conn.sendall(b"HTTP/1.1 200 OK\n"+b"Content-Type: text/html\n"+b"\n")
-            #check for the function type if it is remove
-            elif funcType == "/remove":
+                    print("[INFO]: " + roomName + " is added to the rooms.txt file")
+                    response = 'HTTP/1.1 200 OK\r\n' + \
+                               'Content-Type: text/html\r\n\r\n' + \
+                               '<h1>Room with the name '+ roomName + ' is successfully added.</h1>\r\n'
+                    conn.sendall(response.encode())
+
+
+
+
+
+
+
+
+
+
+            elif funcType == "/remove": # WORKING FINE.
                 query_string = url.split('?')[1]
                 qparams  = dict(param.split('=') for param in query_string.split('&'))
 
                 if qparams.get("name")==None:
                     print("The query parameters are missing or invalid.\n")
-                    conn.sendall(b"HTTP/1.1 400 Bad Request\n"+b"Content-Type: text/html\n"+b"\n")
+                    response = 'HTTP/1.1 400 Bad Request\r\n' + \
+                               'Content-Type: text/html\r\n\r\n' + \
+                               '<h1>The queries are missing or invalid.</h1>\r\n'
+                    conn.sendall(response.encode())
+                    continue
                     
                 roomName = qparams["name"]
-                #open the rooms.txt file to check if the room is already added
-                #if it is added remove it
+                # open the rooms.txt file to check if the room is already added
+                # if it is added remove it
                 f = open("rooms.txt", "r")
                 if roomName in f.read():
                     f = open("rooms.txt", "r")
@@ -71,29 +99,44 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     # REMOVE THE ROOM ALONG WITH ITS ACTIVITIES...
                     ScheduleUtils.removeRoom(roomName)
 
-                    print(roomName + "removed from the rooms.txt file")
-                    conn.sendall(b"HTTP/1.1 200 OK\n"+b"Content-Type: text/html\n"+b"\n")
+                    print("[INFO]: The room," + roomName + " is successfully removed")
+                    response = 'HTTP/1.1 200 OK\r\n' + \
+                               'Content-Type: text/html\r\n\r\n' + \
+                               '<h1>Room with the name '+ roomName + ' is successfully removed.</h1>\r\n'
+                    conn.sendall(response.encode())
                 else:
-                    print("No room with that name.")
-                    conn.sendall(b"HTTP/1.1 403 Forbidden\n"+b"Content-Type: text/html\n"+b"\n")
+                    print("[INFO]: No room with that name.")
+                    response = 'HTTP/1.1 403 Forbidden\r\n' + \
+                               'Content-Type: text/html\r\n\r\n' + \
+                               '<h1>Room with the name '+ roomName + ' does not exist.</h1>\r\n'
+                    conn.sendall(response.encode())
+
+
+
+
+
+
 
 
             elif funcType == "/reserve":
-                #/reserve?room=roomname&activity=activityname&day=x&hour=y&duration=z
+                # /reserve?room=roomname&activity=activityname&day=x&hour=y&duration=z
                 query_string = url.split('?')[1]
                 qparams  = dict(param.split('=') for param in query_string.split('&'))
                 print(qparams)
 
                 if qparams.get("room")==None or qparams.get("activity")==None or qparams.get("day")==None or qparams.get("hour")==None or qparams.get("duration")==None:
                     print("The queries are missing or invalid.\n") 
-                    conn.sendall(b"HTTP/1.1 400 Bad Request\n"+b"Content-Type: text/html\n"+b"\n")
+                    response = 'HTTP/1.1 400 Bad Request\r\n' + \
+                               'Content-Type: text/html\r\n\r\n' + \
+                               '<h1>The queries are missing or invalid.</h1>\r\n'
+                    conn.sendall(response.encode())
                     continue
                 
                 roomName = qparams["room"]
                 activityName = qparams["activity"]
                 day = qparams["day"]
                 hour = qparams["hour"]
-                duration = qparams["activity"]
+                duration = qparams["duration"]
 
                 print("Room Server - Room: " + roomName)
                 print("Room Server - Activity: " + activityName)
@@ -102,9 +145,24 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 print("Room Server - Duration: " + duration)
 
 
-                if ScheduleUtils.isValidDay(day)==False or ScheduleUtils.isValidHour(hour)==False:
+                if ScheduleUtils.isValidActivity(activityName)==False or ScheduleUtils.isValidDay(day)==False or ScheduleUtils.isValidHour(hour)==False or ScheduleUtils.isValidRoom(roomName)==False or ScheduleUtils.isValidDuration(duration)==False:
                     print("The queries are missing or invalid.\n") 
-                    conn.sendall(b"HTTP/1.1 400 Bad Request\n"+b"Content-Type: text/html\n"+b"\n")
+                    response = 'HTTP/1.1 400 Bad Request\r\n' + \
+                               'Content-Type: text/html\r\n\r\n' + \
+                               '<h1>The queries are missing or invalid.</h1>\r\n'
+                    conn.sendall(response.encode())
+                    continue
+                
+                day = int(day)
+                hour = int(hour)
+                duration = int(duration)
+
+                if ScheduleUtils.checkIfScheduleAvailable(roomName,day,hour,duration)==False:
+                    print("The room is already reserved during these day and hours.\n") 
+                    response = 'HTTP/1.1 403 Forbidden\r\n' + \
+                               'Content-Type: text/html\r\n\r\n' + \
+                               '<h1>The room is already reserved during that day and hours.</h1>\r\n'
+                    conn.sendall(response.encode())
                     continue
                 
                 # 1 M2Z06 Webinar 1 1 3
@@ -113,44 +171,73 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 generatedid = len(f.readlines()) + 1
                 f.close()
                 f = open("reservations.txt", "a")
-                f.write(str(generatedid)+" "+roomName+" "+activityName+" "+day+" "+hour+" "+duration+"\n")
+                f.write(str(generatedid)+" "+roomName+" "+activityName+" "+str(day)+" "+str(hour)+" "+str(duration)+"\n")
                 f.close()
                 #print("Generated ID is:" + str(generatedid))
                 
-                #ScheduleUtils.fillSchedule(roomName,activityName,day,hour,duration)
                 
-                conn.sendall(b"HTTP/1.1 200 OK\n"+b"Content-Type: text/html\n"+b"\n")
+                ScheduleUtils.fillSchedule(roomName,activityName,day,hour,duration)
+                
+                print("[INFO]: The room is successfully reserved during that day and hours.")
+                response = 'HTTP/1.1 200 OK\r\n' + \
+                            'Content-Type: text/html\r\n\r\n' + \
+                            '<h1>The room is successfully reserved during that day and hours.</h1>\r\n'
+                conn.sendall(response.encode())
                
-            elif funcType == "/checkavailability":
+
+
+
+
+
+
+            elif funcType == "/checkavailability": # WORKING FINE.
                 #/checkavailability?name=roomname&day=x
                 query_string = url.split('?')[1]
                 qparams  = dict(param.split('=') for param in query_string.split('&'))
                 if qparams.get("name")==None or qparams.get("day")==None:
                     print("The queries are missing or invalid.\n")
-                    conn.sendall(b"HTTP/1.1 400 Bad Request\n"+b"Content-Type: text/html\n"+b"\n")
+                    response = 'HTTP/1.1 400 Bad Request\r\n' + \
+                               'Content-Type: text/html\r\n\r\n' + \
+                               '<h1>The queries are missing or invalid.</h1>\r\n'
+                    conn.sendall(response.encode())
+                    continue
 
                 roomName = qparams["name"]
                 day = qparams["day"]
 
                 if ScheduleUtils.isValidDay(day)==False:
                     print("The queries are missing or invalid.\n") 
-                    conn.sendall(b"HTTP/1.1 400 Bad Request\n"+b"Content-Type: text/html\n"+b"\n")
+                    response = 'HTTP/1.1 400 Bad Request\r\n' + \
+                               'Content-Type: text/html\r\n\r\n' + \
+                               '<h1>The queries are missing or invalid.</h1>\r\n'
+                    conn.sendall(response.encode())
                     continue
                 
-
-
+                if ScheduleUtils.isValidRoom(roomName)==False:
+                    print("The requested room is not found.\n") 
+                    response = 'HTTP/1.1 404 Not Found\r\n' + \
+                               'Content-Type: text/html\r\n\r\n' + \
+                               '<h1>The requested room is not found.</h1>\r\n'
+                    conn.sendall(response.encode())
+                    continue
                 
-            else:
+                day = int(day)
+                availableHours = ScheduleUtils.getAvailableHours(roomName,day)
+                response = 'HTTP/1.1 200 OK\r\n' + \
+                            'Content-Type: text/html\r\n\r\n' + \
+                            '<h1>The room, ' + roomName + ', is available in hours:'+ availableHours +' during that day.</h1>\r\n'
+                conn.sendall(response.encode())
+
+
+            else: # WORKING FINE.
                 print("Requested URL is not found in Room Server.")
-                conn.sendall(b"HTTP/1.1 404 Not Found\n"+b"Content-Type: text/html\n"+b"\n")
+                response = 'HTTP/1.1 404 Not Found\r\n' + \
+                            'Content-Type: text/html\r\n\r\n' + \
+                            '<h1>The requested URL is not found in Room Server.</h1>\r\n'
+                conn.sendall(response.encode())
                 
-    #         conn.sendall(b"HTTP/1.1 200 OK\n"
-    #  +b"Content-Type: text/html\n"
-    #  +b"\n" # Important!
-    #  +b"<html><body>Hello World<p>naber</p></body></html>\n")
             if not data:
                 break
-            #send 200 OK
     
                 
             

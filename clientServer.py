@@ -1,5 +1,4 @@
 import socket
-import requests
 HOST = "localhost"  # The server's hostname or IP address
 PORT = 8087 # The port used by the server
 
