@@ -73,7 +73,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 qparams  = dict(param.split('=') for param in query_string.split('&'))
 
                 if qparams.get("name")==None:
-                    print("The query parameters are missing or invalid.\n")
+                    print("[INFO]: " +"The query parameters are missing or invalid.\n")
                     response = 'HTTP/1.1 400 Bad Request\r\n' + \
                                'Content-Type: text/html\r\n\r\n' + \
                                '<h1>The queries are missing or invalid.</h1>\r\n'
@@ -118,14 +118,14 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
 
 
-            elif funcType == "/reserve":
+            elif funcType == "/reserve": # WORKING FINE.
                 # /reserve?room=roomname&activity=activityname&day=x&hour=y&duration=z
                 query_string = url.split('?')[1]
                 qparams  = dict(param.split('=') for param in query_string.split('&'))
-                print(qparams)
+                #print(qparams)
 
                 if qparams.get("room")==None or qparams.get("activity")==None or qparams.get("day")==None or qparams.get("hour")==None or qparams.get("duration")==None:
-                    print("The queries are missing or invalid.\n") 
+                    print("[INFO]: " +"The queries are missing or invalid.\n") 
                     response = 'HTTP/1.1 400 Bad Request\r\n' + \
                                'Content-Type: text/html\r\n\r\n' + \
                                '<h1>The queries are missing or invalid.</h1>\r\n'
@@ -138,15 +138,15 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 hour = qparams["hour"]
                 duration = qparams["duration"]
 
-                print("Room Server - Room: " + roomName)
-                print("Room Server - Activity: " + activityName)
-                print("Room Server - Day: " + day)
-                print("Room Server - Hour: " + hour)
-                print("Room Server - Duration: " + duration)
+                #print("Room Server - Room: " + roomName)
+                #print("Room Server - Activity: " + activityName)
+                #print("Room Server - Day: " + day)
+                #print("Room Server - Hour: " + hour)
+                #print("Room Server - Duration: " + duration)
 
 
                 if ScheduleUtils.isValidActivity(activityName)==False or ScheduleUtils.isValidDay(day)==False or ScheduleUtils.isValidHour(hour)==False or ScheduleUtils.isValidRoom(roomName)==False or ScheduleUtils.isValidDuration(duration)==False:
-                    print("The queries are missing or invalid.\n") 
+                    print("[INFO]: " +"The queries are missing or invalid.\n") 
                     response = 'HTTP/1.1 400 Bad Request\r\n' + \
                                'Content-Type: text/html\r\n\r\n' + \
                                '<h1>The queries are missing or invalid.</h1>\r\n'
@@ -158,7 +158,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 duration = int(duration)
 
                 if ScheduleUtils.checkIfScheduleAvailable(roomName,day,hour,duration)==False:
-                    print("The room is already reserved during these day and hours.\n") 
+                    print("[INFO]: " +"The room is already reserved during these day and hours.\n") 
                     response = 'HTTP/1.1 403 Forbidden\r\n' + \
                                'Content-Type: text/html\r\n\r\n' + \
                                '<h1>The room is already reserved during that day and hours.</h1>\r\n'
@@ -195,7 +195,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 query_string = url.split('?')[1]
                 qparams  = dict(param.split('=') for param in query_string.split('&'))
                 if qparams.get("name")==None or qparams.get("day")==None:
-                    print("The queries are missing or invalid.\n")
+                    print("[INFO]: " +"The queries are missing or invalid.\n")
                     response = 'HTTP/1.1 400 Bad Request\r\n' + \
                                'Content-Type: text/html\r\n\r\n' + \
                                '<h1>The queries are missing or invalid.</h1>\r\n'
@@ -206,7 +206,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 day = qparams["day"]
 
                 if ScheduleUtils.isValidDay(day)==False:
-                    print("The queries are missing or invalid.\n") 
+                    print("[INFO]: " +"The queries are missing or invalid.\n") 
                     response = 'HTTP/1.1 400 Bad Request\r\n' + \
                                'Content-Type: text/html\r\n\r\n' + \
                                '<h1>The queries are missing or invalid.</h1>\r\n'
@@ -214,7 +214,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     continue
                 
                 if ScheduleUtils.isValidRoom(roomName)==False:
-                    print("The requested room is not found.\n") 
+                    print("[INFO]: " +"The requested room is not found.\n") 
                     response = 'HTTP/1.1 404 Not Found\r\n' + \
                                'Content-Type: text/html\r\n\r\n' + \
                                '<h1>The requested room is not found.</h1>\r\n'
@@ -230,7 +230,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
 
             else: # WORKING FINE.
-                print("Requested URL is not found in Room Server.")
+                print("[INFO]: " +"Requested URL is not found in Room Server.")
                 response = 'HTTP/1.1 404 Not Found\r\n' + \
                             'Content-Type: text/html\r\n\r\n' + \
                             '<h1>The requested URL is not found in Room Server.</h1>\r\n'
