@@ -1,3 +1,20 @@
+"""
+   ____ ____  _____ _  _    ___  _  _ _____ _  _   
+  / ___/ ___|| ____| || |  / _ \| || |___  | || |  
+ | |   \___ \|  _| | || |_| | | | || |_ / /| || |_ 
+ | |___ ___) | |___|__   _| |_| |__   _/ / |__   _|
+  \____|____/|_____|  |_| _\___/___|_|/_/_    |_|  
+ |  _ \|  _ \ / _ \    | | ____/ ___|_   _|        
+ | |_) | |_) | | | |_  | |  _|| |     | |          
+ |  __/|  _ <| |_| | |_| | |__| |___  | |          
+ |_|   |_| \_\\___/ \___/|_____\____| |_|          
+                                                   
+
+Group Members:
+ONURCAN ISLER 150120825
+MERT SAGLAM 150119508
+"""
+
 import socket
 import threading
 from scheduleUtils import ScheduleUtils
@@ -27,7 +44,7 @@ def serveRequest(conn):
             print("[INFO]: " +"The requested query contains methods that are not yet implemented in the server.\n")
             response = 'HTTP/1.1 501 Not Implemented\r\n' + \
                         'Content-Type: text/html\r\n\r\n' + \
-                        '<h1>The requested query contains methods that are not yet implemented in the server.</h1>\r\n'
+                        '<h1>The requested query contains methods that are not yet implemented in the server. [501 Not Implemented]</h1>\r\n'
             conn.sendall(response.encode())
             return
 
@@ -44,7 +61,7 @@ def serveRequest(conn):
                 print("[INFO]: " + "The query parameters are missing or invalid.\n")
                 response = 'HTTP/1.1 400 Bad Request\r\n' + \
                             'Content-Type: text/html\r\n\r\n' + \
-                            '<h1>The queries are missing or invalid.</h1>\r\n'
+                            '<h1>The queries are missing or invalid. [400 Bad Request]</h1>\r\n'
                 conn.sendall(response.encode())
                 return
 
@@ -55,7 +72,7 @@ def serveRequest(conn):
                 print("[INFO]: " + "Room already exists")
                 response = 'HTTP/1.1 403 Forbidden\r\n' + \
                             'Content-Type: text/html\r\n\r\n' + \
-                            '<h1>Room with the name '+ roomName + ' already exists.</h1>\r\n'
+                            '<h1>Room with the name '+ roomName + ' already exists. [403 Forbidden]</h1>\r\n'
                 conn.sendall(response.encode())
                 return
             else:
@@ -69,7 +86,7 @@ def serveRequest(conn):
                 print("[INFO]: " + roomName + " is added to the rooms.txt file")
                 response = 'HTTP/1.1 200 OK\r\n' + \
                             'Content-Type: text/html\r\n\r\n' + \
-                            '<h1>Room with the name '+ roomName + ' is successfully added.</h1>\r\n'
+                            '<h1>Room with the name '+ roomName + ' is successfully added. [200 OK]</h1>\r\n'
                 conn.sendall(response.encode())
 
 
@@ -89,7 +106,7 @@ def serveRequest(conn):
                 print("[INFO]: " +"The query parameters are missing or invalid.\n")
                 response = 'HTTP/1.1 400 Bad Request\r\n' + \
                             'Content-Type: text/html\r\n\r\n' + \
-                            '<h1>The queries are missing or invalid.</h1>\r\n'
+                            '<h1>The queries are missing or invalid. [400 Bad Request]</h1>\r\n'
                 conn.sendall(response.encode())
                 return
                 
@@ -115,13 +132,13 @@ def serveRequest(conn):
                 print("[INFO]: The room," + roomName + " is successfully removed")
                 response = 'HTTP/1.1 200 OK\r\n' + \
                             'Content-Type: text/html\r\n\r\n' + \
-                            '<h1>Room with the name '+ roomName + ' is successfully removed.</h1>\r\n'
+                            '<h1>Room with the name '+ roomName + ' is successfully removed. [200 OK]</h1>\r\n'
                 conn.sendall(response.encode())
             else:
                 print("[INFO]: No room with that name.")
                 response = 'HTTP/1.1 403 Forbidden\r\n' + \
                             'Content-Type: text/html\r\n\r\n' + \
-                            '<h1>Room with the name '+ roomName + ' does not exist.</h1>\r\n'
+                            '<h1>Room with the name '+ roomName + ' does not exist. [403 Forbidden]</h1>\r\n'
                 conn.sendall(response.encode())
 
 
@@ -141,7 +158,7 @@ def serveRequest(conn):
                 print("[INFO]: " + "The queries are missing or invalid.\n") 
                 response = 'HTTP/1.1 400 Bad Request\r\n' + \
                             'Content-Type: text/html\r\n\r\n' + \
-                            '<h1>The queries are missing or invalid.</h1>\r\n'
+                            '<h1>The queries are missing or invalid. [400 Bad Request]</h1>\r\n'
                 conn.sendall(response.encode())
                 return
             
@@ -162,7 +179,7 @@ def serveRequest(conn):
                 print("[INFO]: " +"The queries are missing or invalid.\n") 
                 response = 'HTTP/1.1 400 Bad Request\r\n' + \
                             'Content-Type: text/html\r\n\r\n' + \
-                            '<h1>The queries are missing or invalid.</h1>\r\n'
+                            '<h1>The queries are missing or invalid. [400 Bad Request]</h1>\r\n'
                 conn.sendall(response.encode())
                 return
             
@@ -174,7 +191,7 @@ def serveRequest(conn):
                 print("[INFO]: " +"The room is already reserved during these day and hours.\n") 
                 response = 'HTTP/1.1 403 Forbidden\r\n' + \
                             'Content-Type: text/html\r\n\r\n' + \
-                            '<h1>The room is already reserved during that day and hours.</h1>\r\n'
+                            '<h1>The room is already reserved during that day and hours. [403 Forbidden]</h1>\r\n'
                 conn.sendall(response.encode())
                 return
             
@@ -194,7 +211,7 @@ def serveRequest(conn):
             print("[INFO]: The room is successfully reserved during that day and hours.")
             response = 'HTTP/1.1 200 OK\r\n' + \
                         'Content-Type: text/html\r\n\r\n' + \
-                        '<h1>The room is successfully reserved during that day and hours.</h1>\r\n'
+                        '<h1>The room is successfully reserved during that day and hours. Reservation ID:'+str(generatedid)+'. [200 OK]</h1>\r\n'
             conn.sendall(response.encode())
             
 
@@ -211,7 +228,7 @@ def serveRequest(conn):
                 print("[INFO]: " +"The queries are missing or invalid.\n")
                 response = 'HTTP/1.1 400 Bad Request\r\n' + \
                             'Content-Type: text/html\r\n\r\n' + \
-                            '<h1>The queries are missing or invalid.</h1>\r\n'
+                            '<h1>The queries are missing or invalid. [400 Bad Request]</h1>\r\n'
                 conn.sendall(response.encode())
                 return
 
@@ -222,7 +239,7 @@ def serveRequest(conn):
                 print("[INFO]: " +"The queries are missing or invalid.\n") 
                 response = 'HTTP/1.1 400 Bad Request\r\n' + \
                             'Content-Type: text/html\r\n\r\n' + \
-                            '<h1>The queries are missing or invalid.</h1>\r\n'
+                            '<h1>The queries are missing or invalid. [400 Bad Request]</h1>\r\n'
                 conn.sendall(response.encode())
                 return
             
@@ -230,7 +247,7 @@ def serveRequest(conn):
                 print("[INFO]: " +"The requested room is not found.\n") 
                 response = 'HTTP/1.1 404 Not Found\r\n' + \
                             'Content-Type: text/html\r\n\r\n' + \
-                            '<h1>The requested room is not found.</h1>\r\n'
+                            '<h1>The requested room is not found. [404 Not Found]</h1>\r\n'
                 conn.sendall(response.encode())
                 return
             
@@ -238,7 +255,7 @@ def serveRequest(conn):
             availableHours = ScheduleUtils.getAvailableHours(roomName,day)
             response = 'HTTP/1.1 200 OK\r\n' + \
                         'Content-Type: text/html\r\n\r\n' + \
-                        '<h1>The room, ' + roomName + ', is available in hours:'+ availableHours +' during that day.</h1>\r\n'
+                        '<h1>The room, ' + roomName + ', is available in hours:'+ availableHours +' during that day. [200 OK]</h1>\r\n'
             conn.sendall(response.encode())
 
 
@@ -246,7 +263,7 @@ def serveRequest(conn):
             print("[INFO]: " +"Requested URL is not found in Room Server.")
             response = 'HTTP/1.1 404 Not Found\r\n' + \
                         'Content-Type: text/html\r\n\r\n' + \
-                        '<h1>The requested URL is not found in Room Server.</h1>\r\n'
+                        '<h1>The requested URL is not found in Room Server. [404 Not Found]</h1>\r\n'
             conn.sendall(response.encode())
         if not data:
             return
@@ -265,11 +282,11 @@ def serveRequest(conn):
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((HOST, PORT))
     s.listen()
-    print("[INFO]: Server is started to listening to the address, " + socket.gethostbyname(HOST) + ":" + str(PORT))
+    print("[INFO]: Room Server is started to listening to the address, " + socket.gethostbyname(HOST) + ":" + str(PORT))
     while True:
         conn, addr = s.accept()
         threading.Thread(target=serveRequest, args=(conn,)).start()
-        print("[INFO]: The number of active connections at the moment: "+str(threading.active_count()-1))
+        print("[INFO]: The number of active connections in Room Server at the moment: "+str(threading.active_count()-1))
 
 
     
