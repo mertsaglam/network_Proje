@@ -10,9 +10,20 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         conn, addr = s.accept()
         with conn:
             data = conn.recv(1024)
-            urlstring = data.decode("utf-8")
-            urlstring = urlstring.split("/")[1].split(" ")[0]
+            utfdata = data.decode("utf-8")
+            method = utfdata.split(" ")[0]
+            urlstring = utfdata.split("/")[1].split(" ")[0]
             funcType = urlstring.split("?")[0]
+
+            if method!="GET" and method!="POST":
+                print("[INFO]: " +"The requested query contains methods that are not yet implemented in the server.\n")
+                response = 'HTTP/1.1 501 Not Implemented\r\n' + \
+                            'Content-Type: text/html\r\n\r\n' + \
+                            '<h1>The requested query contains methods that are not yet implemented in the server.</h1>\r\n'
+                conn.sendall(response.encode())
+                continue
+
+
 
 
 

@@ -1,5 +1,4 @@
 import socket
-import time
 
 HOST = "localhost"  
 PORT = 8082
@@ -11,8 +10,18 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         conn, addr = s.accept()
         with conn:
             data = conn.recv(1024)
-            url = data.decode("utf-8").split(" ")[1]
+            utfdata = data.decode("utf-8")
+            method = utfdata.split(" ")[0]
+            url = utfdata.split(" ")[1]
             url = url.split("/")[1]
+
+            if method!="GET" and method!="POST":
+                print("[INFO]: " +"The requested query contains methods that are not yet implemented in the server.\n")
+                response = 'HTTP/1.1 501 Not Implemented\r\n' + \
+                            'Content-Type: text/html\r\n\r\n' + \
+                            '<h1>The requested query contains methods that are not yet implemented in the server.</h1>\r\n'
+                conn.sendall(response.encode())
+                continue
 
 
 
@@ -20,7 +29,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
 
             if url.startswith("add?"): # WORKING FINE.
-                time.sleep(4)
                 query_string = url.split('?')[1]
                 qparams = dict(param.split('=') for param in query_string.split('&'))
                 
@@ -128,3 +136,5 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                             'Content-Type: text/html\r\n\r\n' + \
                             '<h1>The requested URL is not found in Activity Server.</h1>\r\n'
                 conn.sendall(response.encode())
+        
+        
